@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.StringWriter;
+import java.util.List;
 
 @Controller
 public class EmployeeController {
@@ -59,8 +60,18 @@ public class EmployeeController {
     }
 
     @GetMapping("/result")
-    public String getEmployees(){
-        return "Saved";
+    public void getEmployees(HttpServletResponse response) throws Exception {
+        List<Employee> employees = employeeService.getAllEmployees();
+        VelocityContext context = new VelocityContext();
+        context.put("employees", employees);
+
+        Template template = velocityEngine.getTemplate("templates/result.vtl");
+
+        StringWriter writer = new StringWriter();
+        template.merge(context, writer);
+
+        response.setContentType("text/html");
+        response.getWriter().write(writer.toString());
     }
 
 }
