@@ -22,43 +22,45 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    @GetMapping("/employeeForm")
-    public String showEmployeeForm(Model model) {
-        model.addAttribute("employee", new Employee());
-        return "employeeForm";
-    }
-
-    @PostMapping("/employeeForm")
-    public String submitEmployeeForm(@ModelAttribute Employee employee, Model model) {
-        employeeService.saveEmployee(employee);
-        model.addAttribute("employees", employeeService.getAllEmployees());
-        return "result";
-    }
-
-//    @Autowired
-//    private EmployeeRepository employeeRepository;
-
-//    @Autowired
-//    private VelocityEngine velocityEngine;
-//
 //    @GetMapping("/employeeForm")
-//    public void showEmployeeForm(HttpServletResponse response) throws Exception {
-//        VelocityContext context = new VelocityContext();
-//        context.put("employee", new Employee());
-//
-//        Template template = velocityEngine.getTemplate("templates/employeeForm.vtl");
-//
-//        StringWriter writer = new StringWriter();
-//        template.merge(context, writer);
-//
-//        response.setContentType("text/html");
-//        response.getWriter().write(writer.toString());
+//    public String showEmployeeForm(Model model) {
+//        model.addAttribute("employee", new Employee());
+//        return "employeeForm";
 //    }
 //
-//    @PostMapping("/saveEmployee")
-//    public String saveEmployee(@ModelAttribute Employee employee) {
-//        employeeRepository.save(employee);
-//        return "redirect:/employeeForm";
+//    @PostMapping("/employeeForm")
+//    public String submitEmployeeForm(@ModelAttribute Employee employee, Model model) {
+//        employeeService.saveEmployee(employee);
+//        model.addAttribute("employees", employeeService.getAllEmployees());
+//        return "result";
 //    }
+
+    @Autowired
+    private VelocityEngine velocityEngine;
+
+    @GetMapping("/employeeForm")
+    public void showEmployeeForm(HttpServletResponse response) throws Exception {
+        VelocityContext context = new VelocityContext();
+        context.put("employee", new Employee());
+
+        Template template = velocityEngine.getTemplate("templates/employeeForm.vtl");
+
+        StringWriter writer = new StringWriter();
+        template.merge(context, writer);
+
+        response.setContentType("text/html");
+        response.getWriter().write(writer.toString());
+    }
+
+    @PostMapping("/saveEmployee")
+    public String saveEmployee(@ModelAttribute Employee employee) {
+        employeeService.saveEmployee(employee);
+        return "redirect:/result";
+    }
+
+    @GetMapping("/result")
+    public String getEmployees(){
+        return "Saved";
+    }
 
 }
